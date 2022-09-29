@@ -37,11 +37,24 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     private int endringer;         // antall endringer i listen
 
     public DobbeltLenketListe() {
-        throw new UnsupportedOperationException();
+        //throw new UnsupportedOperationException();
     }
 
     public DobbeltLenketListe(T[] a) {
-        throw new UnsupportedOperationException();
+        this();
+
+        if (a.length == 0) return;
+
+        hode = hale = new Node<>(a[a.length-1], null, null);
+
+        for (int i = a.length - 2; i >= 0; i--) {
+            hode = new Node<>(a[i], null, hale);
+            hale = new Node<>(a[a.length - 1], hode, null); // Denne må nok endres til å finne noden før halen
+        }
+
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] != null) antall++;
+        }
     }
 
     public Liste<T> subliste(int fra, int til) {
@@ -50,12 +63,14 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public int antall() {
-        throw new UnsupportedOperationException();
+        if (antall == 0) throw new NullPointerException("Tabellen a er null!");
+        return antall;
     }
 
     @Override
     public boolean tom() {
-        throw new UnsupportedOperationException();
+        if(antall == 0) return true;
+        return false;
     }
 
     @Override
@@ -103,13 +118,63 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         throw new UnsupportedOperationException();
     }
 
-    @Override
+    /*@Override
     public String toString() {
-        throw new UnsupportedOperationException();
+        StringBuilder s = new StringBuilder();
+        s.append('[');
+        if (!tom()) {
+            Node<T> p = hode;
+            s.append(p.verdi);
+            p = p.neste;
+            while (p != null) {
+                s.append(',').append(' ').append(p.verdi);
+                p = p.neste;
+            }
+        }
+        s.append(']');
+        return s.toString();
+    }*/
+
+    @Override
+    public String toString()
+    {
+        StringBuilder s = new StringBuilder();
+        s.append('[');
+        if (!tom())
+        {
+            Node<T> p = hode;
+            s.append(p.verdi);
+            p = p.neste;
+            while (p != null)  // tar med resten hvis det er noe mer
+            {
+                s.append(',').append(' ').append(p.verdi);
+                p = p.neste;
+            }
+        }
+        s.append(']');
+        return s.toString();
     }
 
     public String omvendtString() {
-        throw new UnsupportedOperationException();
+        StringBuilder s = new StringBuilder();
+
+        s.append('[');
+
+        if (!tom()) {
+            Node<T> p = hale;
+            s.append(p.verdi);
+
+            p = p.forrige;
+
+            while (p != null) {
+                s.append(',').append(' ').append(p.verdi);
+                p = p.forrige;
+            }
+        }
+
+        s.append(']');
+
+        return s.toString();
     }
 
     @Override
@@ -158,5 +223,3 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
 } // class DobbeltLenketListe
-
-
