@@ -79,7 +79,26 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     public Liste<T> subliste(int fra, int til) {
-        throw new UnsupportedOperationException();
+        Liste<T> n = new DobbeltLenketListe<>();
+        if (fraTilKontroll(fra, til) == true) {
+            Node<T> p = hode;
+            for (int i = fra; i < til; i++){
+                p = p.neste;
+                n.leggInn(p.verdi);
+            }
+        }
+        return n;
+    }
+
+    private boolean fraTilKontroll(int fra, int til) {
+        if (fra > til) {
+            throw new IllegalArgumentException("fra er større enn til!");
+        } else if (fra < 0) {
+            throw new IllegalArgumentException("fra er mindre enn 0!");
+        } else if (til > antall) {
+            throw new IllegalArgumentException("til er større enn tabellengden!");
+        }
+        return true;
     }
 
     @Override
@@ -117,6 +136,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T hent(int indeks) {
+        indeksKontroll(indeks, false);
         return finnNode(indeks).verdi;
     }
 
@@ -127,7 +147,14 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T oppdater(int indeks, T nyverdi) {
-        throw new UnsupportedOperationException();
+        Objects.requireNonNull(nyverdi, "Kan ikke ta inn null-verdier!");
+
+        indeksKontroll(indeks, false);
+
+        Node<T> p = finnNode(indeks);
+        T gammel = p.verdi;
+        p.verdi = nyverdi;
+        return gammel;
     }
 
     @Override
