@@ -54,6 +54,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         if (i < a.length) {
             Node<T> p = hode = new Node<>(a[i], null, hale);
+            antall = 1;
 
             for (i++; i < a.length; i++) {
                 if (a[i] != null) {
@@ -72,7 +73,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             for (j--; j >= 0; j--) {
                 if (a[j] != null) {
                     r = r.forrige = new Node<>(a[j], hode, null); //Tror denne må endres
-                    antall++;
                 }
             }
         }
@@ -82,9 +82,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         Liste<T> n = new DobbeltLenketListe<>();
         if (fraTilKontroll(fra, til) == true) {
             Node<T> p = hode;
-            for (int i = fra; i < til; i++){
-                p = p.neste;
+            for (int i = fra - 1; i < til; i++) { // Funker ikke helt
                 n.leggInn(p.verdi);
+                p = p.neste;
             }
         }
         return n;
@@ -103,7 +103,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public int antall() {
-        if (antall == 0) throw new NullPointerException("Tabellen a er null!");
+        //if (antall == 0) throw new NullPointerException("Tabellen a er null!");
         return antall;
     }
 
@@ -117,8 +117,12 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     public boolean leggInn(T verdi) {
         Objects.requireNonNull(verdi, "Ikke tillatt med null-verdier!");
 
-        if (antall == 0)  hode = hale = new Node<>(verdi, null, null);  // tom liste
-        else hale = hale.neste = new Node<>(verdi, hale.forrige, null);         // fungerer ikke, må endres!
+        if (antall == 0)  {
+            hode = hale = new Node<>(verdi, null, null);  // tom liste
+        }
+        else {
+            hale = hale.neste = new Node<>(verdi, hale.forrige, null);         // fungerer ikke, må endres!
+        }
 
         antall++;
         return true;
@@ -130,12 +134,28 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         indeksKontroll(indeks, false);
 
-        Node<T> nyNode = new Node<>(verdi);
+        if (indeks == 0) {
+            hode = new Node<>(verdi, hode, null);
+            if (antall == 0) {
+                hale = hode;
+            }
+        }
+        else if (indeks == antall) {
+            hale = hale.neste = new Node<>(verdi, hale.forrige, null);
+        }
+        else {
+            Node<T> p = hode;
+            for (int i = 1; i < indeks; i++) p = p.neste;
+        }
+        antall++;;
     }
 
     @Override
     public boolean inneholder(T verdi) {
-        throw new UnsupportedOperationException();
+        if (indeksTil(verdi) != -1) {
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -207,21 +227,23 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         return s.toString();
     }
 
-    public String omvendtString() {
+    public String omvendtString() { //Fungerer ikke hvis verdier blir lagt inn via leggInn()
         StringBuilder s = new StringBuilder();
 
         s.append('[');
 
-        if (!tom()) {
+        if (!tom() && antall > 1) {
             Node<T> r = hale;
             s.append(r.verdi);
 
             r = r.forrige;
 
-            while (r != null) {
+            while (r.forrige != null) {
                 s.append(',').append(' ').append(r.verdi);
                 r = r.forrige;
             }
+        } else if (antall == 1) {
+            s.append(hode.verdi);
         }
         s.append(']');
 
@@ -275,12 +297,16 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     private Node<T> finnNode(int indeks) {
         Node<T> p = hode;
+        Node<T> r = hale;
         if (indeks < antall / 2) {
-            for (int i = 0; i < indeks; i++) p = p.neste;
+            for (int i = 0; i < indeks; i++){
+                p = p.neste;
+            }
             return p;
         } else {
-            Node<T> r = hale;
-            for (int j = antall - 1; j > 0; j--) r = r.forrige;
+            for (int j = 1; j < antall - indeks; j++) {
+                r = r.forrige;
+            }
             return r;
         }
     }
