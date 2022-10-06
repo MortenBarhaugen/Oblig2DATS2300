@@ -95,7 +95,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             throw new IllegalArgumentException("fra er større enn til!");
         } else if (fra < 0) {
             throw new IllegalArgumentException("fra er mindre enn 0!");
-        } else if (til > antall) {
+        } else if (til > antall()) {
             throw new IllegalArgumentException("til er større enn tabellengden!");
         }
         return true;
@@ -118,10 +118,24 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         Objects.requireNonNull(verdi, "Ikke tillatt med null-verdier!");
 
         if (antall == 0)  {
+            /*Node<T> n = new Node<>(verdi);
+            n.neste = hode;
+            hode = n;
+            hale = n;*/
+
             hode = hale = new Node<>(verdi, null, null);  // tom liste
         }
         else {
-            hale = hale.neste = new Node<>(verdi, hale.forrige, null);         // fungerer ikke, må endres!
+            Node<T> n = new Node<>(verdi);
+            for (int i = 0; i<antall; i++){   // fungerer ikke, må endres!
+               if (i == antall-1) {
+                   hale.neste = n;
+                   n.forrige = hale;
+                   hale = n;
+                   n.neste = null;
+               }
+            }
+
         }
 
         antall++;
@@ -140,7 +154,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                 hale = hode;
             }
         }
-        else if (indeks == antall) {
+        else if (indeks == antall()) {
             hale = hale.neste = new Node<>(verdi, hale.forrige, null);
         }
         else {
@@ -238,7 +252,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
             r = r.forrige;
 
-            while (r.forrige != null) {
+            while (r != null) {
                 s.append(',').append(' ').append(r.verdi);
                 r = r.forrige;
             }
@@ -298,13 +312,13 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     private Node<T> finnNode(int indeks) {
         Node<T> p = hode;
         Node<T> r = hale;
-        if (indeks < antall / 2) {
+        if (indeks < antall() / 2) {
             for (int i = 0; i < indeks; i++){
                 p = p.neste;
             }
             return p;
         } else {
-            for (int j = 1; j < antall - indeks; j++) {
+            for (int j = 1; j < antall() - indeks; j++) {
                 r = r.forrige;
             }
             return r;
