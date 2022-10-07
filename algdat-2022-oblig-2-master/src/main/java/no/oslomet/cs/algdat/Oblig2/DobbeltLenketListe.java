@@ -6,6 +6,7 @@ package no.oslomet.cs.algdat.Oblig2;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -41,6 +42,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         hode = null;
         hale = null;
         antall = 0;
+        endringer = 0;
     }
 
     public DobbeltLenketListe(T[] a) {
@@ -79,15 +81,42 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     public Liste<T> subliste(int fra, int til) {
-        Liste<T> n = new DobbeltLenketListe<>();
+        /*Liste<T> n = new DobbeltLenketListe<>();
+        if (fraTilKontroll(fra, til) == true) {
         if (fraTilKontroll(fra, til) == true) {
             Node<T> p = hode;
-            for (int i = fra - 1; i < til; i++) { // Funker ikke helt
+            for (int i = fra; i < til; i++) { // Funker ikke helt
                 n.leggInn(p.verdi);
                 p = p.neste;
+                DobbeltLenketListe subList(fra, til);
             }
         }
+        return n;*/
+
+        int diff = til - fra;
+        if (diff < 0) {
+            throw new IllegalArgumentException("fra er større enn til!");
+        } else if (fra > antall || til > antall) {
+            throw new IndexOutOfBoundsException("fra eller til er større enn antall!");
+        } else if (fra < 0) {
+            throw new IndexOutOfBoundsException("fra er negativ!");
+        }
+
+        Liste<T> n = new DobbeltLenketListe<T>();
+        Node<T> startNode = hode;
+        int c = 0;
+        while (startNode != null) {
+            if (c > fra - 1 && c < til && fraTilKontroll(fra, til)) {
+                n.leggInn(startNode.verdi);
+            }
+            startNode = startNode.neste;
+            c++;
+        }
         return n;
+    }
+
+    public int getEndringer() {
+        return endringer;
     }
 
     private boolean fraTilKontroll(int fra, int til) {
@@ -133,6 +162,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                    n.forrige = hale;
                    hale = n;
                    n.neste = null;
+                   endringer++;
                }
             }
 
@@ -146,22 +176,27 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     public void leggInn(int indeks, T verdi) {
         Objects.requireNonNull(verdi, "Kan ikke ta inn null-verdier!");
 
-        indeksKontroll(indeks, false);
+
+        if (indeks < 0 || indeks >= antall) {
+            indeksKontroll(indeks, false);
+        }
 
         if (indeks == 0) {
             hode = new Node<>(verdi, hode, null);
             if (antall == 0) {
                 hale = hode;
+                endringer++;
             }
         }
-        else if (indeks == antall()) {
+        else if (indeks == antall) {
             hale = hale.neste = new Node<>(verdi, hale.forrige, null);
+            endringer++;
         }
         else {
             Node<T> p = hode;
-            for (int i = 1; i < indeks; i++) p = p.neste;
+            for (int i = 1; i < indeks; i++) p = p.neste; endringer++;
         }
-        antall++;;
+        antall++;
     }
 
     @Override
@@ -202,6 +237,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         Node<T> p = finnNode(indeks);
         T gammel = p.verdi;
         p.verdi = nyverdi;
+        endringer++;
         return gammel;
     }
 
