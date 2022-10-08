@@ -50,34 +50,40 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         if (a.length == 0) return;
 
-        hode = hale = new Node<>(a[a.length-1], null, null);
+        hode = hale = new Node<>(a[0], null, null);
 
         int i = 0; for (; i < a.length && a[i] == null; i++); //Finner første element som ikke er null
 
         if (i < a.length) {
-            Node<T> p = hode = new Node<>(a[i], null, hale);
-            antall = 1;
+            Node<T> p = hode = new Node<>(a[i], null, null);
+            antall++;
 
             for (i++; i < a.length; i++) {
                 if (a[i] != null) {
                     p = p.neste = new Node<>(a[i], null, null);
+                    hale.neste = p;
+                    p.forrige = hale;
+                    hale = p;
+                    p.neste = null;
                     antall++;
                 }
             }
-            hale = p;
         }
 
-        int j = a.length - 1; for (; j >= 0 && a[j] == null; j--); // Finner siste element som ikke er null
+        /*int j = a.length - 1; for (; j >= 0 && a[j] == null; j--); // Finner siste element som ikke er null
 
         if (j > 0) {
             Node<T> r = hale = new Node<>(a[j], hode, null); //Denne må kanskje endres
 
             for (j--; j >= 0; j--) {
                 if (a[j] != null) {
+                    /*r = r.forrige;
+                    r =
                     r = r.forrige = new Node<>(a[j], hode, null); //Tror denne må endres
                 }
             }
-        }
+
+        }*/
     }
 
     public Liste<T> subliste(int fra, int til) {
@@ -154,6 +160,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
             hode = hale = new Node<>(verdi, null, null);  // tom liste
             endringer++;
+            antall++;
         }
         else {
             Node<T> n = new Node<>(verdi);
@@ -166,10 +173,10 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                    endringer++;
                }
             }
-
+            antall++;
         }
 
-        antall++;
+
         return true;
     }
 
@@ -187,17 +194,21 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             if (antall == 0) {
                 hale = hode;
                 endringer++;
+                antall++;
             }
         }
         else if (indeks == antall) {
             hale = hale.neste = new Node<>(verdi, hale.forrige, null);
             endringer++;
+            antall++;
         }
         else {
             Node<T> p = hode;
-            for (int i = 1; i < indeks; i++) p = p.neste; endringer++;
+            for (int i = 1; i < indeks; i++) p = p.neste;
+            endringer++;
+            antall++;
         }
-        antall++;
+
     }
 
     @Override
@@ -244,29 +255,44 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean fjern(T verdi) {
-        boolean resultat = false;
-        int a = indeksTil(verdi);
 
-        if (a != -1){
-            Node<T> r;
+
+        boolean resultat = false;
+        int indeks = -1;
+        int runloop = 0;
+        Node<T> r = hode;
+        int teller = 0;
+
+        while (runloop == 0 && r != null){
+            if (verdi.equals(r.verdi)){
+                runloop = 1;
+                indeks = teller;
+            }
+            else{
+                r = r.neste;
+                teller++;
+            }
+        }
+
+        if (indeks != -1){
             Node<T> p;
             Node<T> q;
             r = hode;
-            for (int i = 0; i < a; i++) {
+            for (int i = 0; i < indeks; i++) {
                 r = r.neste;
             }
             q = r.forrige;
             p = r.neste;
 
-            if (a == 0 && a != antall-1){
+            if (indeks == 0 && indeks != antall-1){
                 p.forrige = q;
                 hode = p;
             }
-            else if (a == antall-1 && a != 0){
+            else if (indeks == antall-1 && indeks != 0){
                 q.neste = p;
-                hode = q;
+                hale = q;
             }
-            else if (a == 0 && a == antall-1){
+            else if (indeks == 0 && indeks == antall-1){
                 hode = hale = null;
             }
             else {
@@ -280,6 +306,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         else {
             resultat = false;
         }
+
         //sjekke at verdi ligger i lista
         //hvis finnIndeks returnerer -1 sett lik false
         //hvis verdi ligger i lista return true og fjern verdi
@@ -289,7 +316,8 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public T fjern(int indeks) { // sliter med at programmet failer når det indekseres over antallet
         Node<T> r = null;
-        if (indeks <= antall - 1) {
+
+        if (indeks < antall && indeks >= 0) {
             Node<T> p;
             Node<T> q;
             if (indeks <= antall / 2) {
@@ -299,7 +327,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                 }
             } else if (indeks > antall / 2) {
                 r = hale;
-                for (int i = antall; i>indeks; i--){
+                for (int i = antall - 1; i>indeks; i--){
                     r = r.forrige;
                 }
             }
@@ -313,7 +341,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             }
             else if (indeks == antall-1 && indeks != 0){
                 q.neste = p;
-                hode = q;
+                hale = q;
             }
             else if (indeks == 0 && indeks == antall-1){
                 hode = hale = null;
@@ -324,6 +352,9 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             }
             antall--;
             endringer++;
+        }
+        else{
+            throw new IndexOutOfBoundsException("indeks er utenfor intervallet");
         }
         return r.verdi;
     }
@@ -340,13 +371,16 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         if (!tom()) {
             Node<T> p = hode;
-            s.append(p.verdi);
-
-            p = p.neste;
 
             while (p != null) {
-                s.append(',').append(' ').append(p.verdi);
-                p = p.neste;
+                if (p == hode){
+                    s.append(p.verdi);
+                    p = p.neste;
+                }
+                else {
+                    s.append(", ").append(p.verdi);
+                    p = p.neste;
+                }
             }
         }
         s.append(']');
@@ -361,13 +395,16 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         if (!tom() && antall > 1) {
             Node<T> r = hale;
-            s.append(r.verdi);
-
-            r = r.forrige;
 
             while (r != null) {
-                s.append(',').append(' ').append(r.verdi);
-                r = r.forrige;
+                if (r == hale){
+                    s.append(r.verdi);
+                    r = r.forrige;
+                }
+                else {
+                    s.append(", ").append(r.verdi);
+                    r = r.forrige;
+                }
             }
         } else if (antall == 1) {
             s.append(hode.verdi);

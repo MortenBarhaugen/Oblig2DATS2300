@@ -2,15 +2,10 @@ package no.oslomet.cs.algdat.Oblig2;
 
 public class sjekkOppgave6 {
     public static void main(String[] args) {
-        /*DobbeltLenketListe<Integer> liste = new DobbeltLenketListe<>();
+        /*DobbeltLenketListe<String> liste = new DobbeltLenketListe<>();
+        liste = new DobbeltLenketListe<>(new String[]{"A", "B", "C", "D", "E", "F", "G"});
 
-        liste.leggInn(1);
-        liste.leggInn(2);
-        liste.leggInn(3);
-        liste.leggInn(4);
-
-        int i = 0;
-        liste.fjern(i);
+        liste.fjern("C");
         System.out.println(liste.toString());
         System.out.println(liste.omvendtString());*/
 
@@ -268,7 +263,7 @@ public class sjekkOppgave6 {
 
         for (int i = 1; i <= 100_000; i++) nyliste.leggInn(i);
         long tid1 = System.currentTimeMillis();
-        //for (int i = 40000; i <= 50000; i++) nyliste.fjern(new Integer(i));
+        for (int i = 40000; i <= 50000; i++) nyliste.fjern(new Integer(i));
         tid1 = System.currentTimeMillis() - tid1;
         nyliste = new DobbeltLenketListe<>();
 
@@ -279,6 +274,10 @@ public class sjekkOppgave6 {
 
         long maks = Math.max(tid1, tid2);
         long min = Math.min(tid1, tid2);
+
+        System.out.println(maks);
+        System.out.println(min);
+        System.out.println(1.5*min);
 
         if (maks > 1.5 * min) {
             System.out.println("Oppgave 6zg: Ineffektiv kode! Har du kodet den ene fjern-metoden");
