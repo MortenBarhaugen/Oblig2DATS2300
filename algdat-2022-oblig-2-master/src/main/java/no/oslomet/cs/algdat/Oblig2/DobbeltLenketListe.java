@@ -153,6 +153,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             hale = n;*/
 
             hode = hale = new Node<>(verdi, null, null);  // tom liste
+            endringer++;
         }
         else {
             Node<T> n = new Node<>(verdi);
@@ -243,12 +244,88 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean fjern(T verdi) {
-        throw new UnsupportedOperationException();
+        boolean resultat = false;
+        int a = indeksTil(verdi);
+
+        if (a != -1){
+            Node<T> r;
+            Node<T> p;
+            Node<T> q;
+            r = hode;
+            for (int i = 0; i < a; i++) {
+                r = r.neste;
+            }
+            q = r.forrige;
+            p = r.neste;
+
+            if (a == 0 && a != antall-1){
+                p.forrige = q;
+                hode = p;
+            }
+            else if (a == antall-1 && a != 0){
+                q.neste = p;
+                hode = q;
+            }
+            else if (a == 0 && a == antall-1){
+                hode = hale = null;
+            }
+            else {
+                q.neste = p;
+                p.forrige = q;
+            }
+            antall--;
+            endringer++;
+            resultat = true;
+        }
+        else {
+            resultat = false;
+        }
+        //sjekke at verdi ligger i lista
+        //hvis finnIndeks returnerer -1 sett lik false
+        //hvis verdi ligger i lista return true og fjern verdi
+        return resultat;
     }
 
     @Override
-    public T fjern(int indeks) {
-        throw new UnsupportedOperationException();
+    public T fjern(int indeks) { // sliter med at programmet failer når det indekseres over antallet
+        Node<T> r = null;
+        if (indeks <= antall - 1) {
+            Node<T> p;
+            Node<T> q;
+            if (indeks <= antall / 2) {
+                r = hode;
+                for (int i = 0; i<indeks; i++){
+                    r = r.neste;
+                }
+            } else if (indeks > antall / 2) {
+                r = hale;
+                for (int i = antall; i>indeks; i--){
+                    r = r.forrige;
+                }
+            }
+
+            q = r.forrige;
+            p = r.neste;
+
+            if (indeks == 0 && indeks != antall-1){
+                p.forrige = q;
+                hode = p;
+            }
+            else if (indeks == antall-1 && indeks != 0){
+                q.neste = p;
+                hode = q;
+            }
+            else if (indeks == 0 && indeks == antall-1){
+                hode = hale = null;
+            }
+            else {
+                q.neste = p;
+                p.forrige = q;
+            }
+            antall--;
+            endringer++;
+        }
+        return r.verdi;
     }
 
     @Override
