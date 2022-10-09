@@ -361,7 +361,31 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public void nullstill() {
-        throw new UnsupportedOperationException();
+        //Metode 1: snitter på 2.5ms kjøretid for å slette 100000 elementer
+        long tid = System.currentTimeMillis();
+        Node<T> r = hode;
+        Node<T> p;
+        while (r != (null)){
+            p = r.neste;
+            r.verdi = null;
+            r.neste = r.forrige = null;
+            hode = p;
+            r = p;
+        }
+        antall = 0;
+        endringer++;
+        tid = System.currentTimeMillis() - tid;
+        System.out.println(tid);
+
+        //Metode 2: snitter med 935ms kjøretid for å slette 100000 elementer
+        /*long tid = System.currentTimeMillis();
+        for (int i = 0; i < antall - 1; i++){
+            fjern(i);
+        }
+        antall = 0;
+        endringer++;
+        tid = System.currentTimeMillis() - tid;
+        System.out.println(tid);*/
     }
 
     public String toString() {
