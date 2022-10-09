@@ -275,8 +275,8 @@ public class sjekkOppgave6 {
         long maks = Math.max(tid1, tid2);
         long min = Math.min(tid1, tid2);
 
-        System.out.println(maks);
-        System.out.println(min);
+        System.out.println(tid2);
+        System.out.println(tid1);
         System.out.println(1.5*min);
 
         if (maks > 1.5 * min) {

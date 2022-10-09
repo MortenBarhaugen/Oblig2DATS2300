@@ -4,10 +4,7 @@ package no.oslomet.cs.algdat.Oblig2;
 ////////////////// class DobbeltLenketListe //////////////////////////////
 
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 public class DobbeltLenketListe<T> implements Liste<T> {
@@ -315,7 +312,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public T fjern(int indeks) { // sliter med at programmet failer når det indekseres over antallet
-        Node<T> r = null;
+        Node<T> r;
 
         if (indeks < antall && indeks >= 0) {
             Node<T> p;
@@ -325,7 +322,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                 for (int i = 0; i<indeks; i++){
                     r = r.neste;
                 }
-            } else if (indeks > antall / 2) {
+            } else {
                 r = hale;
                 for (int i = antall - 1; i>indeks; i--){
                     r = r.forrige;
@@ -440,11 +437,12 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public Iterator<T> iterator() {
-        throw new UnsupportedOperationException();
+        return iterator();
     }
 
     public Iterator<T> iterator(int indeks) {
-        throw new UnsupportedOperationException();
+        indeksKontroll(indeks, false);
+        return iterator();
     }
 
     private class DobbeltLenketListeIterator implements Iterator<T> {
@@ -459,7 +457,22 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
 
         private DobbeltLenketListeIterator(int indeks) {
-            throw new UnsupportedOperationException();
+            Node<T> r;
+            if (indeks <= antall / 2) {
+                r = hode;
+                for (int i = 0; i<indeks; i++){
+                    r = r.neste;
+                }
+            } else {
+                r = hale;
+                for (int i = antall - 1; i>indeks; i--){
+                    r = r.forrige;
+                }
+            }
+
+            denne = r;
+            fjernOK = false;
+            iteratorendringer = endringer;
         }
 
         @Override
@@ -469,7 +482,18 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         @Override
         public T next() {
-            throw new UnsupportedOperationException();
+            if (iteratorendringer != endringer){
+                throw new ConcurrentModificationException();
+            }
+            else if (hasNext() != true) {
+                throw new NoSuchElementException();
+            }
+            else {
+                fjernOK = true;
+                Node<T> annen = denne;
+                denne = denne.neste;
+                return annen.verdi;
+            }
         }
 
         @Override
