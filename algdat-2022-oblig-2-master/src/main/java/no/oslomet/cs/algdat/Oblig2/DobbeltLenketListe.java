@@ -81,18 +81,6 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     }
 
     public Liste<T> subliste(int fra, int til) {
-        /*Liste<T> n = new DobbeltLenketListe<>();
-        if (fraTilKontroll(fra, til) == true) {
-        if (fraTilKontroll(fra, til) == true) {
-            Node<T> p = hode;
-            for (int i = fra; i < til; i++) { // Funker ikke helt
-                n.leggInn(p.verdi);
-                p = p.neste;
-                DobbeltLenketListe subList(fra, til);
-            }
-        }
-        return n;*/
-
         int diff = til - fra;
         if (diff < 0) {
             throw new IllegalArgumentException("fra er større enn til!");
@@ -104,13 +92,13 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         Liste<T> n = new DobbeltLenketListe<T>();
         Node<T> startNode = hode;
-        int c = 0;
+        int t = 0;
         while (startNode != null) {
-            if (c > fra - 1 && c < til && fraTilKontroll(fra, til)) {
+            if (t > fra - 1 && t < til && fraTilKontroll(fra, til)) {
                 n.leggInn(startNode.verdi);
             }
             startNode = startNode.neste;
-            c++;
+            t++;
         }
         return n;
     }
@@ -133,7 +121,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
     @Override
     public int antall() {
         //if (antall == 0) throw new NullPointerException("Tabellen a er null!");
-        return antall;
+        return antall; //Oppdateres i andre metoder
     }
 
     @Override
@@ -144,20 +132,15 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean leggInn(T verdi) {
-        Objects.requireNonNull(verdi, "Ikke tillatt med null-verdier!");
+        Objects.requireNonNull(verdi, "Ikke tillatt å legge inn null-verdier!");
 
         if (antall == 0)  {
-            /*Node<T> n = new Node<>(verdi);
-            n.neste = hode;
-            hode = n;
-            hale = n;*/
-
             hode = hale = new Node<>(verdi, null, null);  // tom liste
         }
         else {
             Node<T> n = new Node<>(verdi);
-            for (int i = 0; i<antall; i++){   // fungerer ikke, må endres!
-               if (i == antall-1) {
+            for (int i = 0; i < antall; i++){
+               if (i == antall - 1) {
                    hale.neste = n;
                    n.forrige = hale;
                    hale = n;
@@ -165,9 +148,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
                    endringer++;
                }
             }
-
         }
-
         antall++;
         return true;
     }
@@ -225,7 +206,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             if (p.verdi.equals(verdi)) return indeks;
             p = p.neste;
         }
-        return -1;
+        return -1; // Hvis verdien ikke finnes i listen
     }
 
     @Override
