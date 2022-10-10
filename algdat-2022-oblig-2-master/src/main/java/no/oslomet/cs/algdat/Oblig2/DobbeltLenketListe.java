@@ -4,9 +4,7 @@ package no.oslomet.cs.algdat.Oblig2;
 ////////////////// class DobbeltLenketListe //////////////////////////////
 
 
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.*;
 
 
 public class DobbeltLenketListe<T> implements Liste<T> {
@@ -121,7 +119,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
             hode = hale = new Node<>(verdi, null, null);  // tom liste
         }
         else {
-            hale = hale.neste = new Node<>(verdi, hale.forrige, null);         // fungerer ikke, må endres!
+            hale = hale.neste = new Node<>(verdi, hale.forrige, null);  // fungerer ikke, må endres!
         }
 
         antall++;
@@ -193,17 +191,127 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public boolean fjern(T verdi) {
-        throw new UnsupportedOperationException();
+        boolean resultat = false;
+        int indeks = -1;
+        int runloop = 0;
+        Node<T> r = hode;
+        int teller = 0;
+        while (runloop == 0 && r != null){
+            if (verdi.equals(r.verdi)){
+                runloop = 1;
+                indeks = teller;
+            }
+            else{
+                r = r.neste;
+                teller++;
+            }
+        }
+        if (indeks != -1){
+            Node<T> p;
+            Node<T> q;
+            r = hode;
+            for (int i = 0; i < indeks; i++) {
+                r = r.neste;
+            }
+            q = r.forrige;
+            p = r.neste;
+            if (indeks == 0 && indeks != antall-1){
+                p.forrige = q;
+                hode = p;
+            }
+            else if (indeks == antall-1 && indeks != 0){
+                q.neste = p;
+                hale = q;
+            }
+            else if (indeks == 0 && indeks == antall-1){
+                hode = hale = null;
+            }
+            else {
+                q.neste = p;
+                p.forrige = q;
+            }
+            antall--;
+            endringer++;
+            resultat = true;
+        }
+        else {
+            resultat = false;
+        }
+        //sjekke at verdi ligger i lista
+        //hvis finnIndeks returnerer -1 sett lik false
+        //hvis verdi ligger i lista return true og fjern verdi
+        return resultat;
     }
 
     @Override
     public T fjern(int indeks) {
-        throw new UnsupportedOperationException();
-    }
+        Node<T> r = null;
+        if (indeks < antall && indeks >= 0) {
+            Node<T> p;
+            Node<T> q;
+            if (indeks <= antall / 2) {
+                r = hode;
+                for (int i = 0; i<indeks; i++){
+                    r = r.neste;
+                }
+            } else if (indeks > antall / 2) {
+                r = hale;
+                for (int i = antall - 1; i>indeks; i--){
+                    r = r.forrige;
+                }
+            }
+            q = r.forrige;
+            p = r.neste;
+            if (indeks == 0 && indeks != antall-1){
+                p.forrige = q;
+                hode = p;
+            }
+            else if (indeks == antall-1 && indeks != 0){
+                q.neste = p;
+                hale = q;
+            }
+            else if (indeks == 0 && indeks == antall-1){
+                hode = hale = null;
+            }
+            else {
+                q.neste = p;
+                p.forrige = q;
+            }
+            antall--;
+            endringer++;
+        }
+        else{
+            throw new IndexOutOfBoundsException("indeks er utenfor intervallet");
+        }
+        return r.verdi;    }
 
     @Override
     public void nullstill() {
-        throw new UnsupportedOperationException();
+        //Metode 1: snitter på 2.5ms kjøretid for å slette 100000 elementer
+        long tid = System.currentTimeMillis();
+        Node<T> r = hode;
+        Node<T> p;
+        while (r != (null)){
+            p = r.neste;
+            r.verdi = null;
+            r.neste = r.forrige = null;
+            hode = p;
+            r = p;
+        }
+        antall = 0;
+        endringer++;
+        tid = System.currentTimeMillis() - tid;
+        System.out.println(tid);
+
+        //Metode 2: snitter med 935ms kjøretid for å slette 100000 elementer
+        /*long tid = System.currentTimeMillis();
+        for (int i = 0; i < antall - 1; i++){
+            fjern(i);
+        }
+        antall = 0;
+        endringer++;
+        tid = System.currentTimeMillis() - tid;
+        System.out.println(tid);*/
     }
 
     public String toString() {
@@ -252,11 +360,12 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
     @Override
     public Iterator<T> iterator() {
-        throw new UnsupportedOperationException();
+        return new DobbeltLenketListeIterator();
     }
 
     public Iterator<T> iterator(int indeks) {
-        throw new UnsupportedOperationException();
+        indeksKontroll(indeks, false);
+        return iterator();
     }
 
     private class DobbeltLenketListeIterator implements Iterator<T> {
@@ -271,7 +380,22 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
 
         private DobbeltLenketListeIterator(int indeks) {
-            throw new UnsupportedOperationException();
+            Node<T> r;
+            if (indeks <= antall / 2) {
+                r = hode;
+                for (int i = 0; i < indeks; i++) {
+                    r = r.neste;
+                }
+            } else {
+                r = hale;
+                for (int i = antall - 1; i > indeks; i--) {
+                    r = r.forrige;
+                }
+            }
+
+            denne = r;
+            fjernOK = false;
+            iteratorendringer = endringer;
         }
 
         @Override
@@ -281,7 +405,16 @@ public class DobbeltLenketListe<T> implements Liste<T> {
 
         @Override
         public T next() {
-            throw new UnsupportedOperationException();
+            if (iteratorendringer != endringer) {
+                throw new ConcurrentModificationException();
+            }
+            else if (hasNext() != true) {
+                throw new NoSuchElementException();
+            }
+            fjernOK = true;
+            Node<T> annen = denne;
+            denne = denne.neste;
+            return annen.verdi;
         }
 
         @Override
