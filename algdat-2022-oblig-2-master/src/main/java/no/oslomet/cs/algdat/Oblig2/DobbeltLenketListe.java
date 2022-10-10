@@ -311,7 +311,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         antall = 0;
         endringer++;
         tid = System.currentTimeMillis() - tid;
-        System.out.println(tid);*/
+        System.out.println(tid)*/
     }
 
     public String toString() {
