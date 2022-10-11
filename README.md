@@ -30,3 +30,12 @@ Hvis verdien ikke finnes i listen returneres -1. I inneholder() kan vi derfor ba
 
 I oppgave 5 sjekker vi først om parameterverdien verdi er en null-verdi, og hvis den er det kastes en feilmelding som gir tilbakemelding om det. Hvis verdien som skal legges inn er gyldig, sjekkes først om antall er 0. Hvis det stemmer, blir hode og hale satt til den nye verdien siden det da er den eneste verdien i listen.
 Hvis antall ikke er 0 looper vi gjennom til slutten av listen og legger til den nye verdien på slutten av listen.
+
+I oppgave 6 sjekker vi først med boolean som først finner hvor verdien vi søker etter ligger i den lenkede listen med compare siden det kan være ord, navn, tall etc. Og så fjerner vi hvis det finner, det er forskjellige if-statements for forksjellige situasjoner av en fjerning. Kommer ann på om verdien er i starten, slutten eller mellom to verdier. Returverdi blir da true. For fjerning på indeks så gjør vi nesten det samme bare at vi har indeksen fra før så nå er det lettere å velge hvilken side vi skal starte fra og itererer fra hale/hode og til ønsket verdi og fjerner på samme måte som i forrige bare med retur verdi av det vi fjerna.
+
+I oppgave 7 i Metode 1 er det egentlig bare fjerning etterhvert som man flytter seg framover. Den er ganske effektiv fordi man flytter seg stadig fremover og bare fjerner den neste verdien uten så mye ekstra omregninger eller if-setninger. Mens Metode 2 er mindre effektiv fordi den gjør metodekall og er generelt mindre effektiv i kjøringen sin som vist i sekundene det tok å utføre testene som er skrevet i kommentarer i DobbeltLenketListe programmet.
+
+I oppgave 8a så programmerte vi til å sjekke at endringene var like og at den stoppet når den ikke hadde en neste verdi.
+8b så implementerte vi at den skulle returnere DobbeltLenketListeIterator uten indeks.
+8c først implementerte vi at den skulle finne posisjonen til indeksen vår og så satte vi denne lik den posisjonen som ble funnet og kopierte resten fra den andre konstrøktoren som sagt i oppgaven.
+8d så implementerte vi først indeksKontrollen så den ikke returener feil, og så implementerte vi at den skulle returnere DobbeltLenketListeIterator uten indeks.
