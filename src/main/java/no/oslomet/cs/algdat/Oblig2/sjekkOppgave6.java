@@ -2,13 +2,6 @@ package no.oslomet.cs.algdat.Oblig2;
 
 public class sjekkOppgave6 {
     public static void main(String[] args) {
-        /*DobbeltLenketListe<String> liste = new DobbeltLenketListe<>();
-        liste = new DobbeltLenketListe<>(new String[]{"A", "B", "C", "D", "E", "F", "G"});
-
-        liste.fjern("C");
-        System.out.println(liste.toString());
-        System.out.println(liste.omvendtString());*/
-
         int antallFeil = 0;
 
         DobbeltLenketListe<String> liste = new DobbeltLenketListe<>();
