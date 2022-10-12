@@ -37,7 +37,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         this();
         if (a.length == 0) return;
         hode = hale = new Node<>(a[0], null, null);
-        int i = 0; for (; i < a.length && a[i] == null; i++); //Finner første element som ikke er null
+        int i = 0; for (; i < a.length && a[i] == null; i++);
         if (i < a.length) {
             Node<T> p = hode = new Node<>(a[i], null, null);
             antall++;
@@ -106,7 +106,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         }
         else {
             Node<T> n = new Node<>(verdi);
-            for (int i = 0; i<antall; i++){   // fungerer ikke, må endres!
+            for (int i = 0; i<antall; i++){
                 if (i == antall-1) {
                     hale.neste = n;
                     n.forrige = hale;
@@ -245,7 +245,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         return resultat;
     }
     @Override
-    public T fjern(int indeks) { // sliter med at programmet failer når det indekseres over antallet
+    public T fjern(int indeks) {
         Node<T> r = null;
         if (indeks < antall && indeks >= 0) {
             Node<T> p;
@@ -335,7 +335,7 @@ public class DobbeltLenketListe<T> implements Liste<T> {
         s.append(']');
         return s.toString();
     }
-    public String omvendtString() { //Fungerer ikke hvis verdier blir lagt inn via leggInn()
+    public String omvendtString() {
         StringBuilder s = new StringBuilder();
         s.append('[');
         if (!tom() && antall > 1) {
