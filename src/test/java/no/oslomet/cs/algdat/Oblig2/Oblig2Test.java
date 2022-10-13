@@ -1151,7 +1151,7 @@ class Oblig2Test {
     }
 
     ////// Oppgave 9 /////////////////////
-    @org.junit.jupiter.api.Test
+    /* @org.junit.jupiter.api.Test
     void oppgave9() {
         int antallFeil = 0;
 
@@ -1294,6 +1294,6 @@ class Oblig2Test {
             System.out.println("Oppgave 10f: Metoden sorterer feil!");
             antallFeil++;
         }
-    }
+    } */
 
 }
