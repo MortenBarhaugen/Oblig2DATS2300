@@ -10,7 +10,6 @@ Oppgaven er levert av følgende studenter:
 I oppgaven har vi hatt følgende arbeidsfordeling:
 * Morten har hatt hovedansvar for oppgave 1, 2, 3, 4 og 5. 
 * Lars har hatt hovedansvar for oppgave 6, 7, og 8.
-* OBS!: Vi hadde problemer med Gradle, så testene kjøres ikke automatisk i Github, men vi har laget egne sjekk-filer for alle oppgavene
 
 # Oppgavebeskrivelse
 
